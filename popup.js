@@ -1,9 +1,11 @@
+import { API_KEY } from './constants.js';
+
 document.addEventListener('DOMContentLoaded', function () {
     console.log("Le script est en cours d'exécution");
     const apiUrl = 'https://ecoindex.p.rapidapi.com/v1/ecoindexes?size=50&page=1';
 
     const headers = {
-        'X-RapidAPI-Key': 'x',
+        'X-RapidAPI-Key': API_KEY,
         'X-RapidAPI-Host': 'ecoindex.p.rapidapi.com'
     };
 
