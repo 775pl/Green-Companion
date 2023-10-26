@@ -1,75 +1,99 @@
-import { API_KEY } from './constants.js';
+import { API_KEY } from "./constants.js";
 
-document.addEventListener('DOMContentLoaded', function () {
+console.log('popup.js works!')
+
+const letterColors = {
+    'A': '#4CAF50',
+    'B': '#34bc6e',
+    'C': '#f7ed00',
+    'D': '#FFC107',
+    'E': '#FF5722',
+    'F': '#f01c16'
+};
+
+const elements = [
+    document.getElementById('grade'),
+    document.getElementById('score'),
+    document.getElementById('url'),
+    document.getElementById('width'),
+    document.getElementById('height'),
+    document.getElementById('size'),
+    document.getElementById('nodes'),
+    document.getElementById('requests'),
+    document.getElementById('ges'),
+    document.getElementById('water'),
+];
+
+const button = document.getElementById('start-button');
+const startBox = document.getElementById('start-box');
+const loaderBox = document.getElementById('loader-box');
+const resultsBox = document.getElementById('results-box');
+
+button.addEventListener('click', event => {
     console.log("Le script est en cours d'exécution");
-    const apiUrl = 'https://ecoindex.p.rapidapi.com/v1/ecoindexes?size=50&page=1';
 
+    startBox.classList.add('hidden');
+    loaderBox.classList.remove('hidden');
+
+    const url = 'https://ecoindex.p.rapidapi.com/v1/ecoindexes?size=50&page=1';
+    const method = 'GET';
     const headers = {
         'X-RapidAPI-Key': API_KEY,
         'X-RapidAPI-Host': 'ecoindex.p.rapidapi.com'
     };
 
-    fetch(apiUrl, {
-        method: 'GET',
-        headers: headers
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data && data.items && data.items.length > 0) {
+    const options = { method, headers };
 
-        const ecoIndex = data.items[0].score;
-        const gesValue = data.items[0].ges;
-        const waterValue = data.items[0].water;
+    fetch(url, options)
+        .then(res => res.json())
+        .then(data => {
 
-        document.getElementById('ges-value').textContent = gesValue + ' kg CO2e';
-        document.getElementById('water-value').textContent = waterValue + ' litres';
+            loaderBox.classList.add('hidden');
+            resultsBox.classList.remove('hidden');
 
-        let letter;
-        let legend;
+            if (data.items.length) {
+                const item = data.items[0];
 
-        if (ecoIndex >= 90) {
-            letter = 'A';
-            legend = 'Excellent';
-        } else if (ecoIndex >= 80) {
-            letter = 'B';
-            legend = 'Très bien';
-        } else if (ecoIndex >= 70) {
-            letter = 'C';
-            legend = 'Bien';
-        } else if (ecoIndex >= 60) {
-            letter = 'D';
-            legend = 'Assez bien';
-        } else if (ecoIndex >= 50) {
-            letter = 'E';
-            legend = 'Nul';
-        } else {
-            letter = 'F';
-            legend = 'Horrible';
-        }
+                for (const element of elements) {
+                    console.log(element);
+                    const key = element.id;
+                    const value = item[key];
+                    
+                    const grandPa = element.parentElement.parentElement;
 
-        document.getElementById('eco-index').textContent = letter;
-        document.getElementById('legend').textContent = legend;
+                    if(value) {
+                        grandPa.classList.remove('hidden');
+                        element.innerText = value;
+                    } else {
+                        if(grandPa.tagName === 'TR') {
+                            grandPa.classList.add('hidden');
+                            element.innerText = '?'
+                        }
+                    }
 
-        const letterColors = {
-            'A': '#4CAF50',
-            'B': '#34bc6e',
-            'C': '#f7ed00',
-            'D': '#FFC107',
-            'E': '#FF5722',
-            'F': '#f01c16'
-        };
+                    if (key === 'grade') {
+                        element.style.backgroundColor = letterColors[value];
+                    }
+                }
+            }
 
-        const body = document.querySelector('body');
+        })
+        .catch(err => {
+            console.error('Erreur lors de la requête API :', err);
+        })
+})
 
-        if (letterColors.hasOwnProperty(letter)) {
-            body.className = 'color-theme-' + letter;
-        }
+const detailsBox = document.getElementById('details-box');
 
-    }else {
-        console.error('Aucune donnée valide trouvée dans la réponse API.');
-    }
-    })
-    .catch(error => {
-        console.error('Erreur lors de la requête API :', error);
-    });
-});
+document.getElementById('show-details-button').addEventListener('click', () => {
+    detailsBox.classList.remove('hidden');
+})
+
+document.getElementById('close-details-button').addEventListener('click', () => {
+    detailsBox.classList.add('hidden');
+})
+
+document.getElementById('refresh-button').addEventListener('click', () => {
+    resultsBox.classList.add('hidden');
+    startBox.classList.remove('hidden');
+})

@@ -1,32 +1,84 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Eco Index</title>
-    <link rel="stylesheet" type="text/css" href="popup.css">
-  </head>
-  <body class="color-theme">
-    <div class="popup">
-        <h1 class="title">Eco Index</h1>
-        <div id="eco-index">
-            <div class="letter-container">
-                <div id="letter">A</div>
-            </div>
-            <div class="legend-container">
-                <div id="legend">Excellent</div>
-            </div>
-        </div>
-        <div class="eco-data">
-            <p class="data-label">GES</p>
-            <p class="data-value" id="ges-value">0 kg CO2e</p>
-          </div>
-          <div class="eco-data">
-            <p class="data-label">Consommation d'eau</p>
-            <p class="data-value" id="water-value">0 litres</p>
-          </div>
+<html lang="en">
 
-        <a class="learn-more" href="#">En savoir plus</a>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eco Index</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="popup.js" type="module"></script>
+</head>
+
+<body>
+  <div id="popup">
+    <div id="popup-header">
+      <img src="./icons/green_48.png" alt="Logo" />
+      <h1>Eco Index</h1>
+    </div>
+
+    <div id="popup-body">
+      <div id="start-box">
+        <h2>Démarrer l'analyse</h2>
+        <button id="start-button" type="button">&nbsp;▶</button>
       </div>
-      <script src="jquery.min.js"></script>
-    <script type="module" src="popup.js"></script>
-  </body>
+
+      <div id="loader-box" class="hidden">
+        <img
+          src="https://img.pikbest.com/png-images/20190918/cartoon-snail-loading-loading-gif-animation_2734139.png!sw800"
+          alt="Loader">
+      </div>
+
+      <div id="results-box" class="hidden">
+
+        <div id="score-box">
+          <h2>Score</h2>
+          <button id="refresh-button" type="button">x</button>
+          <div id="grade">?</div>
+          <button id="show-details-button" type="button">En savoir plus...</button>
+        </div>
+
+        <div id="details-box" class="hidden">
+          <button id="close-details-button" type="button">˅</button>
+          <h2>Détails</h2>
+          <table>
+            <tr title="URL de la page analysée">
+              <th>URL</th>
+              <td><a id="url" href="#">Unknow</a></td>
+            </tr>
+            <tr title="Score écoindex correspondant de la page">
+              <th>Score</th>
+              <td><span id="score">Unknow</span>/100</td>
+            </tr>
+            <tr title="Résolution de la fenêtre simulée en pixel">
+              <th>Résolution</th>
+              <td><span id="width">1920</span>&nbsp;*&nbsp;<span id="height">1080</span></td>
+            </tr>
+            <tr title="Taille de la page et des éléments téléchargés de la page">
+              <th>Poids</th>
+              <td><span id="size">Unknow</span>Ko</td>
+            </tr>
+            <tr title="Nombre d'éléments DOM dans la page">
+              <th>Noeuds</th>
+              <td><span id="nodes">Unknow</span></td>
+            </tr>
+            <tr title="Nombre de requêtes externes effectuées par la page">
+              <th>Requêtes</th>
+              <td><span id="requests">Unknow</span></td>
+            </tr>
+            <tr title="Emission de Gaz a Effet de Serre">
+              <th>GES</th>
+              <td><span id="ges">Unknow</span>&nbsp;gCO2e</td>
+            </tr>
+            <tr title="Consommation d'eau équivalente de la page">
+              <th>Eau</th>
+              <td><span id="water">Unknow</span>&nbsp;cl</td>
+            </tr>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</body>
+
 </html>
