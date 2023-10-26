@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const apiUrl = 'https://ecoindex.p.rapidapi.com/v1/ecoindexes?size=50&page=1';
 
     const headers = {
-        'X-RapidAPI-Key': '4f7506cf85msh8e06d119de9750fp14685bjsn604511cca067',
+        'X-RapidAPI-Key': 'x',
         'X-RapidAPI-Host': 'ecoindex.p.rapidapi.com'
     };
 
