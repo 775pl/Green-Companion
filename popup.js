@@ -29,58 +29,70 @@ const startBox = document.getElementById('start-box');
 const loaderBox = document.getElementById('loader-box');
 const resultsBox = document.getElementById('results-box');
 
-button.addEventListener('click', event => {
+button.addEventListener('click', async () => {
     console.log("Le script est en cours d'exécution");
 
     startBox.classList.add('hidden');
     loaderBox.classList.remove('hidden');
 
-    const url = 'https://ecoindex.p.rapidapi.com/v1/ecoindexes?size=50&page=1';
-    const method = 'GET';
-    const headers = {
-        'X-RapidAPI-Key': API_KEY,
-        'X-RapidAPI-Host': 'ecoindex.p.rapidapi.com'
-    };
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        const activeTab = tabs[0];
+        const tabUrl = new URL(activeTab.url);
 
-    const options = { method, headers };
+        // Faites ce que vous voulez avec l'URL (par exemple, affichez-le dans la console)
+        console.log('URL de l\'onglet actif : ' + tabUrl);
 
-    fetch(url, options)
-        .then(res => res.json())
-        .then(data => {
+        const url = `https://bff.ecoindex.fr/api/results/?url=${tabUrl}`;
+        const method = 'GET';
+        const headers = {
+            'X-RapidAPI-Key': API_KEY,
+            'X-RapidAPI-Host': 'ecoindex.p.rapidapi.com'
+        };
 
-            loaderBox.classList.add('hidden');
-            resultsBox.classList.remove('hidden');
+        const options = { method, headers };
 
-            if (data.items.length) {
-                const item = data.items[0];
+        fetch(url, options)
+            .then(res => res.json())
+            .then(data => {
 
-                for (const element of elements) {
-                    console.log(element);
-                    const key = element.id;
-                    const value = item[key];
-                    
-                    const grandPa = element.parentElement.parentElement;
+                console.log(data);
 
-                    if(value) {
-                        grandPa.classList.remove('hidden');
-                        element.innerText = value;
-                    } else {
-                        if(grandPa.tagName === 'TR') {
-                            grandPa.classList.add('hidden');
-                            element.innerText = '?'
+                loaderBox.classList.add('hidden');
+                resultsBox.classList.remove('hidden');
+
+                const result = getResult(data);
+
+                console.log(result);
+
+                if (result) {
+                    for (const element of elements) {
+                        const key = element.id;
+                        const value = result[key];
+
+                        const grandPa = element.parentElement.parentElement;
+
+                        if (value) {
+                            grandPa.classList.remove('hidden');
+                            element.innerText = value;
+                        } else {
+                            if (grandPa.tagName === 'TR') {
+                                grandPa.classList.add('hidden');
+                                element.innerText = '?'
+                            }
+                        }
+
+                        if (key === 'grade') {
+                            element.style.backgroundColor = result.colors;
                         }
                     }
-
-                    if (key === 'grade') {
-                        element.style.backgroundColor = letterColors[value];
-                    }
                 }
-            }
 
-        })
-        .catch(err => {
-            console.error('Erreur lors de la requête API :', err);
-        })
+            })
+            .catch(err => {
+                console.error('Erreur lors de la requête API :', err);
+            })
+    });
+
 })
 
 const detailsBox = document.getElementById('details-box');
@@ -97,3 +109,20 @@ document.getElementById('refresh-button').addEventListener('click', () => {
     resultsBox.classList.add('hidden');
     startBox.classList.remove('hidden');
 })
+
+
+function getResult(data) {
+    const lastestResult = data['latest-result'];
+    const olderResults = data['older-results'];
+    const hotsResults = data['host-results'];
+
+    if (lastestResult.date) {
+        return lastestResult;
+    } else if (olderResults && olderResults.length) {
+        return olderResults[0];
+    } else if (hotsResults && hotsResults.length) {
+        return hotsResults[0];
+    } else {
+        return null;
+    }
+}
