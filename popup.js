@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const apiUrl = 'https://ecoindex.p.rapidapi.com/v1/ecoindexes?size=50&page=1';
 
     const headers = {
-        'X-RapidAPI-Key': 'X    ',
+        'X-RapidAPI-Key': '4f7506cf85msh8e06d119de9750fp14685bjsn604511cca067',
         'X-RapidAPI-Host': 'ecoindex.p.rapidapi.com'
     };
 
@@ -16,6 +16,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data && data.items && data.items.length > 0) {
 
         const ecoIndex = data.items[0].score;
+        const gesValue = data.items[0].ges;
+        const waterValue = data.items[0].water;
+
+        document.getElementById('ges-value').textContent = gesValue + ' kg CO2e';
+        document.getElementById('water-value').textContent = waterValue + ' litres';
 
         let letter;
         let legend;

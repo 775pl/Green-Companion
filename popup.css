@@ -104,4 +104,17 @@ body {
     background-color: #f01c16; 
     color: #fff; /* Couleur du texte */
   }
-    
+  
+  .eco-data {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px;
+  }
+  .data-label {
+    font-weight: bold;
+  }
+  .data-value {
+    font-size: 18px;
+  }
